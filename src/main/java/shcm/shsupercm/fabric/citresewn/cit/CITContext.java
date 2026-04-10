@@ -3,7 +3,9 @@ package shcm.shsupercm.fabric.citresewn.cit;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.EnchantedBookItem;
+/*? <1.21.2 {*/
+/*import net.minecraft.item.EnchantedBookItem;
+*//*?}*/
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;

@@ -1,5 +1,6 @@
 package shcm.shsupercm.fabric.citresewn.defaults.mixin.types.item;
 
+/*? <1.21.2 {*//*
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.util.ModelIdentifier;
@@ -27,3 +28,4 @@ public class BakedModelManagerMixin implements TypeItem.BakedModelManagerMixinAc
         this.citresewn$forcedMojankModel = model;
     }
 }
+*//*?}*/

@@ -9,14 +9,14 @@ import shcm.shsupercm.fabric.citresewn.cit.builtin.conditions.core.*;
 import shcm.shsupercm.fabric.citresewn.config.CITResewnConfig;
 import shcm.shsupercm.fabric.citresewn.pack.GlobalProperties;
 import shcm.shsupercm.fabric.citresewn.pack.PackParser;
-import shcm.shsupercm.fabric.citresewn.mixin.ModelLoaderMixin;
+import shcm.shsupercm.fabric.citresewn.mixin.BakedModelManagerMixin;
 
 import java.util.*;
 
 /**
  * Holds and manages the currently loaded CITs.
  * @see #getActive()
- * @see ModelLoaderMixin
+ * @see BakedModelManagerMixin
  */
 public class ActiveCITs { private ActiveCITs() {}
 	/**
@@ -54,7 +54,7 @@ public class ActiveCITs { private ActiveCITs() {}
 
 	/**
 	 * Attempts to load/activate CITs from packs in the given resource manager, disposing of any previously loaded CITs if present.
-	 * @see ModelLoaderMixin
+	 * @see BakedModelManagerMixin
 	 * @see PackParser#loadGlobalProperties(ResourceManager, GlobalProperties)
 	 * @see GlobalProperties#callHandlers()
 	 * @see PackParser#parseCITs(ResourceManager)

@@ -1,15 +1,11 @@
 package shcm.shsupercm.fabric.citresewn.defaults.mixin.types.item;
 
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.item.ItemModels;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,10 +22,13 @@ import java.lang.ref.WeakReference;
 
 import static shcm.shsupercm.fabric.citresewn.defaults.cit.types.TypeItem.CONTAINER;
 
-/**
- * Do not go through this class, it looks awful because it was ported from a "proof of concept".<br>
- * The whole type will be rewritten at some point.
- */
+/*? <1.21.2 {*//*
+import net.minecraft.client.render.item.ItemModels;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
+
 @Mixin(ItemRenderer.class)
 public class ItemRendererMixin {
     @Shadow @Final private ItemModels models;
@@ -67,3 +66,4 @@ public class ItemRendererMixin {
         citresewn$mojankCITModel = null;
     }
 }
+*//*?}*/

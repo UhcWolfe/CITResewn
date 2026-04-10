@@ -24,55 +24,32 @@ import java.util.stream.Collectors;
 /**
  * Will be rewritten at some point.
  */
-@Mixin(ModelLoader.class)
+/*? <1.21.5 {*/
+@Mixin(/*? <1.21.2 {*//*ModelLoader.class*//*?} else {*/ModelBaker.class/*?}*/)
 public class ModelLoaderMixin {
     @Inject(method = "loadModelFromJson", cancellable = true, at = @At("HEAD"))
     public void citresewn$forceLiteralResewnModelIdentifier(Identifier originalId, CallbackInfoReturnable<JsonUnbakedModel> cir) {
-        if (ResewnItemModelIdentifier.marked(originalId)) {
-            final Identifier id = ResewnItemModelIdentifier.unpack(originalId);
-            try (InputStream is = MinecraftClient.getInstance().getResourceManager().getResource(id).orElseThrow().getInputStream()) {
-                JsonUnbakedModel json = JsonUnbakedModel.deserialize(IOUtils.toString(is, StandardCharsets.UTF_8));
-                json.id = id.toString();
-                json.id = json.id.substring(0, json.id.length() - 5);
-
-                ((JsonUnbakedModelAccessor) json).getTextureMap().replaceAll((layer, original) -> {
-                    Optional<SpriteIdentifier> left = original.left();
-                    if (left.isPresent()) {
-                        String originalPath = left.get().getTextureId().getPath();
-                        String[] split = originalPath.split("/");
-                        if (originalPath.startsWith("./") || (split.length > 2 && split[1].equals("cit"))) {
-                            Identifier resolvedIdentifier = CITType.resolveAsset(id, originalPath, "textures", ".png", MinecraftClient.getInstance().getResourceManager());
-                            if (resolvedIdentifier != null)
-                                return Either.left(new SpriteIdentifier(left.get().getAtlasId(), resolvedIdentifier));
-                        }
-                    }
-                    return original;
-                });
-
-                Identifier parentId = ((JsonUnbakedModelAccessor) json).getParentId();
-                if (parentId != null) {
-                    String[] parentIdPathSplit = parentId.getPath().split("/");
-                    if (parentId.getPath().startsWith("./") || (parentIdPathSplit.length > 2 && parentIdPathSplit[1].equals("cit"))) {
-                        parentId = CITType.resolveAsset(id, parentId.getPath(), "models", ".json", MinecraftClient.getInstance().getResourceManager());
-                        if (parentId != null)
-                            ((JsonUnbakedModelAccessor) json).setParentId(ResewnItemModelIdentifier.pack(parentId));
-                    }
-                }
-
-                json.getOverrides().replaceAll(override -> {
-                    String[] modelIdPathSplit = override.getModelId().getPath().split("/");
-                    if (override.getModelId().getPath().startsWith("./") || (modelIdPathSplit.length > 2 && modelIdPathSplit[1].equals("cit"))) {
-                        Identifier resolvedOverridePath = CITType.resolveAsset(id, override.getModelId().getPath(), "models", ".json", MinecraftClient.getInstance().getResourceManager());
-                        if (resolvedOverridePath != null)
-                            return new ModelOverride(ResewnItemModelIdentifier.pack(resolvedOverridePath), override.streamConditions().collect(Collectors.toList()));
-                    }
-
-                    return override;
-                });
+        if (originalId instanceof ResewnItemModelIdentifier resewnIdentifier) {
+            InputStream is = null;
+            try {
+                JsonUnbakedModel json = JsonUnbakedModel.deserialize(IOUtils.toString(is = MinecraftClient.getInstance().getResourceManager().open(resewnIdentifier.getIdentifier()), StandardCharsets.UTF_8));
+                json.id = resewnIdentifier.getIdentifier().toString();
+                ((JsonUnbakedModelAccessor) json).getOverrides().clear();
+                ((JsonUnbakedModelAccessor) json).getOverrides().addAll(resewnIdentifier.getOverrides().stream().map(override -> new ModelOverride(override.modelId(), override.conditions())).collect(Collectors.toList()));
 
                 cir.setReturnValue(json);
             } catch (Exception ignored) {
+            } finally {
+                IOUtils.closeQuietly(is);
             }
         }
     }
+
+    @Inject(method = "resolveModel", cancellable = true, at = @At("HEAD"))
+    public void citresewn$resolveLiteralResewnModelIdentifier(Identifier id, CallbackInfoReturnable<Either> cir) {
+        if (id instanceof ResewnItemModelIdentifier resewnIdentifier)
+            cir.setReturnValue(Either.left(resewnIdentifier.getIdentifier()));
+    }
 }
+/*?}*/
+
